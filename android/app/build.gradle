@@ -1,0 +1,126 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion 29
+    flavorDimensions project.flavorDimensions
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        minSdkVersion 18
+        targetSdkVersion 29
+
+    }
+
+    productFlavors {
+        agfs {
+            dimension project.flavorDimensions
+            applicationId project.applicationid_agfs
+            versionCode Integer.parseInt(project.versioncode_agfs)
+            versionName project.versionname_agfs
+            signingConfigs {
+                config {
+                    keyAlias project.keyAlias_agfs
+                    keyPassword project.keyPassword_agfs
+                    storePassword project.storePassword_agfs
+                    storeFile file(project.storeFile_agfs)
+                }
+            }
+        }
+
+        mbm {
+            dimension project.flavorDimensions
+            applicationId project.applicationid_mbm
+            versionCode Integer.parseInt(project.versioncode_mbm)
+            versionName project.versionname_mbm
+            signingConfigs {
+                config {
+                    keyAlias project.keyAlias_mbm
+                    keyPassword project.keyPassword_mbm
+                    storePassword project.storePassword_mbm
+                    storeFile file(project.storeFile_mbm)
+                }
+            }
+        }
+
+        emco {
+            dimension project.flavorDimensions
+            applicationId project.applicationid_emco
+            versionCode Integer.parseInt(project.versioncode_emco)
+            versionName project.versionname_emco
+            signingConfigs {
+                config {
+                    keyAlias project.keyAlias_emco
+                    keyPassword project.keyPassword_emco
+                    storePassword project.storePassword_emco
+                    storeFile file(project.storeFile_emco)
+                }
+            }
+        }
+
+    }
+
+    signingConfigs {
+        release {
+
+            keyAlias project.keyAlias_mbm
+            keyPassword project.keyPassword_mbm
+            storePassword project.storePassword_mbm
+            storeFile file(project.storeFile_mbm)
+
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+
+    repositories {
+        mavenCentral()
+    }
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'org.jsoup:jsoup:1.10.3'
+
+}
